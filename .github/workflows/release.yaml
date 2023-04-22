@@ -8,11 +8,12 @@ jobs:
 
   improve-release:
     runs-on: ubuntu-latest
+    
     name: Improve release message
     steps:
       - name: Update release
         uses: EsmerlinJM/gha-release-messages-improved@v1.0.0
         with:
-          repository: ${{ github.event.repository.name }}
+          repository: ${{ github.repository_owner }}
           openai_api_key: ${{ secrets.OPENAI_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
