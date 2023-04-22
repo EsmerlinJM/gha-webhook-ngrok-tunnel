@@ -1,0 +1,43 @@
+name: Run tunnel
+
+on:
+   pull_request:
+    branches:
+      - "main"
+    paths:
+      - "**/*.go"
+      - "go.mod"
+      - "go.sum"
+      - "**/api-docs.json"
+      - "Dockerfile"
+      - ".github/workflows/development.yml"
+      - ".github/workflows/clean.yml"
+    types: [opened, synchronize, reopened, labeled]
+
+jobs:
+
+  improve-release:
+    runs-on: ubuntu-latest
+    
+    name: Improve release message
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Set tunnel
+        run: go run main.go
+        env:
+          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+          REPO: ${{ secrets.REPO }}
+          OWNER: ${{ secrets.OWNER }}
+          PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
+          WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
+
+      - name: "Say Hello Mona it's Monday"
+        run: echo "$Greeting $First_Name. Today is Monday!"
+        env:
+          First_Name: Mona
