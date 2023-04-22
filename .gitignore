@@ -57,8 +57,9 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
-# Env files
+# Env and secrets enviroments files
 .env
+*.secrets
 
 ### VisualStudioCode ###
 .vscode/*
