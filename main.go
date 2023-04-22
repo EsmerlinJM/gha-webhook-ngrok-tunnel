@@ -96,7 +96,7 @@ func run(ctx context.Context) error {
 		log.Println("accepted connection from", conn.RemoteAddr())
 
 		go func() {
-			des := os.Getenv("PRPIVATE_ADDRESS")
+			des := os.Getenv("PRIVATE_ADDRESS")
 			err := handleConnection(ctx, des, conn)
 			log.Println("connection closed:", err)
 		}()
