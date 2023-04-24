@@ -1,4 +1,4 @@
-name: Run tunnel
+name: Run and create webhook
 
 on:
    pull_request:
@@ -17,8 +17,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    
-    name: Build script
+    name: Build app
     steps:
       - uses: actions/checkout@v3
 
@@ -42,8 +41,17 @@ jobs:
 
       - name: Build app
         run: go build -o app
+        
+  deploy:
+    name: Deploy on self hosted
+    needs: build
+    runs-on: [self-hosted, macOS]
 
-      - name: Run script
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v3
+
+      - name: Run app
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
@@ -52,6 +60,4 @@ jobs:
             PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
             WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
         run: ./app
-        
-
   

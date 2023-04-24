@@ -2,23 +2,22 @@
 FROM golang:1.20.3-alpine as build
 
 # Set a non-root user
-USER nobody:nobody
+USER nonroot:nonroot
 
 # Copy the application files
 COPY . /app
 
 # Build the application
 WORKDIR /app
-RUN go build -o app .
+RUN CGO_ENABLED=0 go build -ldflags="-w -s" -v -o app .
 
 # Use a distroless image for security
-FROM gcr.io/distroless/base-debian10
+FROM gcr.io/distroless/static
 
-# Copy only the necessary files from the build container
 COPY --from=build /app/app /app
 
 # Set a non-root user
 USER nonroot
 
 # Set the entrypoint to run the application
-CMD ["/app/app"]
+ENTRYPOINT ["/app"]
