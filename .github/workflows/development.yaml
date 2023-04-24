@@ -44,7 +44,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          REPO: ${{ (split("/", basename(github.repository)))[1] }}
+          REPO: ${{ github.event.repository.name }}
           OWNER: ${{ github.repository_owner }}
           PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
           WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
