@@ -59,5 +59,8 @@ jobs:
             OWNER: ${{ github.repository_owner }}
             PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
             WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
-        run: ./app
+        run: nohup ./app &> log.txt &
+
+      - name: Display log file
+        run: cat log.txt
   
