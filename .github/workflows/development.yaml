@@ -8,7 +8,6 @@ on:
       - "**/*.go"
       - "go.mod"
       - "go.sum"
-      - "**/api-docs.json"
       - "Dockerfile"
       - ".github/workflows/development.yml"
       - ".github/workflows/clean.yml"
@@ -16,28 +15,42 @@ on:
 
 jobs:
 
-  improve-release:
+  build:
     runs-on: ubuntu-latest
     
-    name: Improve release message
+    name: Checkout source code
     steps:
       - uses: actions/checkout@v3
+
+      - name: Cache Go modules
+        uses: actions/cache@preview
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-build-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ env.cache-name }}-
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-  
 
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
           go-version: 1.19
 
-      - name: Set tunnel
-        run: go run main.go
+      - name: Verify dependencies
+        run: go mod verify
+
+      - name: Build
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          REPO: ${{ secrets.REPO }}
-          OWNER: ${{ secrets.OWNER }}
+          REPO:   ${{ (split("/", basename(github.repository)))[1] }}
+          OWNER: ${{ github.repository_owner }}
           PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
           WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
+        run: go build -o app
 
-      - name: "Say Hello Mona it's Monday"
-        run: echo "$Greeting $First_Name. Today is Monday!"
-        env:
-          First_Name: Mona
+      - name: Run script
+        run: ./app
+
+  

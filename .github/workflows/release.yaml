@@ -14,6 +14,6 @@ jobs:
       - name: Update release
         uses: EsmerlinJM/gha-release-messages-improved@v1.0.0
         with:
-          repository: ${{ github.repository_owner }}
+          repository: ${{ github.repository }}
           openai_api_key: ${{ secrets.OPENAI_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
