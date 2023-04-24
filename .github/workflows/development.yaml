@@ -53,7 +53,7 @@ jobs:
 
       - name: Run app
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
             NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
             REPO: ${{ github.event.repository.name }}
             OWNER: ${{ github.repository_owner }}
