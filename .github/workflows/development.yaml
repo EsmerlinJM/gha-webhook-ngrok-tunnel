@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
-    name: Checkout source code
+    name: Build script
     steps:
       - uses: actions/checkout@v3
 
@@ -40,17 +40,17 @@ jobs:
       - name: Verify dependencies
         run: go mod verify
 
-      - name: Build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          REPO: ${{ github.event.repository.name }}
-          OWNER: ${{ github.repository_owner }}
-          PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
-          WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
+      - name: Build app
         run: go build -o app
 
       - name: Run script
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+            REPO: ${{ github.event.repository.name }}
+            OWNER: ${{ github.repository_owner }}
+            PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
+            WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
         run: ./app
         
 
