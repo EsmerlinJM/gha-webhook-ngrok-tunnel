@@ -62,5 +62,5 @@ jobs:
         run: docker build . --file Dockerfile --tag esmerlinjm/webhook-ngrok-tunnel:${{ steps.image_info.outputs.image_tag }}
       
       - name: Docker Push
-        run: docker push esmerlinjm/webhook-ngrok-tunnel
+        run: docker push esmerlinjm/webhook-ngrok-tunnel:${{ steps.image_info.outputs.image_tag }}
   
