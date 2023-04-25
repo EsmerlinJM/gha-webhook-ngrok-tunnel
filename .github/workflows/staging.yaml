@@ -2,7 +2,15 @@ name: Staging Build
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - "main"
+    paths:
+      - "**/*.go"
+      - "go.mod"
+      - "go.sum"
+      - "Dockerfile"
+      - ".github/workflows/development.yml"
+      - ".github/workflows/clean.yml"
 
 jobs:
 
