@@ -1,4 +1,4 @@
-name: Run tunnel
+name: Development build
 
 on:
    pull_request:
@@ -17,40 +17,50 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    
-    name: Checkout source code
+    name: Build app
     steps:
       - uses: actions/checkout@v3
-
-      - name: Cache Go modules
-        uses: actions/cache@preview
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-build-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.OS }}-build-${{ env.cache-name }}-
-            ${{ runner.OS }}-build-
-            ${{ runner.OS }}-  
 
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: 1.20.3
 
       - name: Verify dependencies
         run: go mod verify
 
-      - name: Build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
-          REPO:   ${{ (split("/", basename(github.repository)))[1] }}
-          OWNER: ${{ github.repository_owner }}
-          PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
-          WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
+      - name: Build app
         run: go build -o app
 
-      - name: Run script
-        run: ./app
+      - name: Run App
+        env:
+            GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+            NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
+            REPO: ${{ github.event.repository.name }}
+            OWNER: ${{ github.repository_owner }}
+            PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
+            WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
+        run: nohup ./app & > log.txt &
 
+      - name: Cat output app.
+        run: |
+          cat log.txt
+
+      - name: docker login
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+
+      - name: Set Image Info name
+        id: image_info
+        run: |
+          echo "image_tag=$(echo "${{ env.GITHUB_HEAD_REF_SLUG || env.GITHUB_REF_SLUG }}" | sha256sum | cut -c 1-5)" >> $GITHUB_OUTPUT
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag esmerlinjm/webhook-ngrok-tunnel:${{ steps.image_info.outputs.image_tag }}
+      
+      - name: Docker Push
+        run: docker push esmerlinjm/webhook-ngrok-tunnel:${{ steps.image_info.outputs.image_tag }}
   

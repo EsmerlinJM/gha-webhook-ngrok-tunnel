@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/google/go-github/v51/github"
-	"github.com/joho/godotenv"
 	"golang.ngrok.com/ngrok"
 	"golang.ngrok.com/ngrok/config"
 	"golang.org/x/oauth2"
@@ -27,13 +26,12 @@ var (
 )
 
 func main() {
-	if _, err := os.Stat(".env"); err == nil {
-		godotenv.Load(".env")
-		githubToken = os.Getenv("GITHUB_TOKEN")
-		repo = os.Getenv("REPO")
-		owner = os.Getenv("OWNER")
-		webHookEndpoint = os.Getenv("WEBHOOK_ENDPOINT")
-	}
+	// if _, err := os.Stat("action.yml"); err == nil {
+	// 	githubToken = os.Getenv("INPUT_GITHUB_PAT_TOKEN")
+	// 	repo = os.Getenv("INPUT_REPO")
+	// 	owner = os.Getenv("INPUT_OWNER")
+	// 	webHookEndpoint = os.Getenv("INPUT_WEBHOOK_ENDPOINT")
+	// }
 
     if err := run(context.Background()); err != nil {
         log.Fatal(err)
@@ -66,7 +64,9 @@ func run(ctx context.Context) error {
 
 	tunnelUrl := tunnel.URL()+webHookEndpoint
 
-	log.Println("tunnel created:", tunnelUrl)
+	output := fmt.Sprintf("::set-output name=webhook_url::%s", tunnelUrl)
+
+	fmt.Println(output)
 
 	config := map[string]interface{} {
 		"url": flag.String("url", tunnelUrl, "The URL to which the payloads will be delivered."),
@@ -190,3 +190,4 @@ func handleConnection(ctx context.Context, dest string, conn net.Conn) error {
 
 	return g.Wait()
 }
+

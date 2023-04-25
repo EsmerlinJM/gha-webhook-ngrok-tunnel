@@ -1,24 +1,17 @@
-# Use a trusted base image
-FROM golang:1.20.3-alpine as build
+FROM golang:1.20.3-alpine as builder
 
-# Set a non-root user
-USER nobody:nobody
-
-# Copy the application files
+WORKDIR /app
 COPY . /app
 
-# Build the application
-WORKDIR /app
-RUN go build -o app .
+RUN go get -d -v
 
-# Use a distroless image for security
-FROM gcr.io/distroless/base-debian10
+# Statically compile our app for use in a distroless container
+RUN CGO_ENABLED=0 go build -ldflags="-w -s" -v -o app .
 
-# Copy only the necessary files from the build container
-COPY --from=build /app/app /app
+# A distroless container image with some basics like SSL certificates
+# https://github.com/GoogleContainerTools/distroless
+FROM gcr.io/distroless/static
 
-# Set a non-root user
-USER nonroot
+COPY --from=builder /app/app /app
 
-# Set the entrypoint to run the application
-CMD ["/app/app"]
+ENTRYPOINT ["/app"]
