@@ -34,4 +34,4 @@ jobs:
       run: docker build . --file Dockerfile --tag esmerlinjm/webhook-ngrok-tunnel:latest
       
     - name: Docker Push
-      run: docker push esmerlinjm/webhook-ngrok-tunnel
+      run: docker push esmerlinjm/webhook-ngrok-tunnel:latest

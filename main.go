@@ -26,12 +26,12 @@ var (
 )
 
 func main() {
-	if _, err := os.Stat("action.yml"); err == nil {
-		githubToken = os.Getenv("INPUT_GITHUB_PAT_TOKEN")
-		repo = os.Getenv("INPUT_REPO")
-		owner = os.Getenv("INPUT_OWNER")
-		webHookEndpoint = os.Getenv("INPUT_WEBHOOK_ENDPOINT")
-	}
+	// if _, err := os.Stat("action.yml"); err == nil {
+	// 	githubToken = os.Getenv("INPUT_GITHUB_PAT_TOKEN")
+	// 	repo = os.Getenv("INPUT_REPO")
+	// 	owner = os.Getenv("INPUT_OWNER")
+	// 	webHookEndpoint = os.Getenv("INPUT_WEBHOOK_ENDPOINT")
+	// }
 
     if err := run(context.Background()); err != nil {
         log.Fatal(err)
