@@ -10,7 +10,7 @@ on:
       - "go.sum"
       - "Dockerfile"
       - ".github/workflows/development.yml"
-      - ".github/workflows/clean.yml"
+      - ".github/workflows/staging.yml"
     types: [closed]
 
 jobs:
