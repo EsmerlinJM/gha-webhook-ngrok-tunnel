@@ -53,14 +53,11 @@ jobs:
 
       - name: Run app
         env:
-            GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+            GITHUB_TOKEN: ${{ github.token }}
             NGROK_AUTHTOKEN: ${{ secrets.NGROK_AUTHTOKEN }}
             REPO: ${{ github.event.repository.name }}
             OWNER: ${{ github.repository_owner }}
             PRIVATE_ADDRESS: ${{ secrets.PRIVATE_ADDRESS }}
             WEBHOOK_ENDPOINT: ${{ secrets.WEBHOOK_ENDPOINT }}
-        run: nohup ./app &> log.txt &
-
-      - name: Display log file
-        run: cat log.txt
+        run: ./app
   
