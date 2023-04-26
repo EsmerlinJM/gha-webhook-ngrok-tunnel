@@ -9,8 +9,8 @@ on:
       - "go.mod"
       - "go.sum"
       - "Dockerfile"
-      - ".github/workflows/development.yml"
-      - ".github/workflows/clean.yml"
+      - ".github/workflows/development.yaml"
+      - ".github/workflows/clean.yaml"
     types: [opened, synchronize, reopened, labeled]
 
 jobs:

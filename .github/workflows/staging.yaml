@@ -9,8 +9,8 @@ on:
       - "go.mod"
       - "go.sum"
       - "Dockerfile"
-      - ".github/workflows/development.yml"
-      - ".github/workflows/staging.yml"
+      - ".github/workflows/development.yaml"
+      - ".github/workflows/staging.yaml"
     types: [closed]
 
 jobs:
